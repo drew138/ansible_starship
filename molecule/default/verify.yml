@@ -1,0 +1,13 @@
+---
+- name: Verify
+  hosts: localhost
+  tasks:
+    - name: Check if the starship cli exists
+      stat:
+        path: /usr/local/bin/starship
+      register: starship_cli_facts
+
+    - name: Fail if starship cli does not exist
+      fail:
+        msg: "Go directory /usr/local/go does not exist."
+      when: not starship_cli_facts.stat.exists
