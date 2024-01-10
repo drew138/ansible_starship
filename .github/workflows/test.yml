@@ -1,0 +1,36 @@
+---
+name: test ansible roles
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  test:
+    env:
+      OBJC_DISABLE_INITIALIZE_FORK_SAFETY: YES
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      matrix:
+        os: [macos, ubuntu]
+    steps:
+      - name: check out the codebase
+        uses: actions/checkout@v2
+
+      - name: set up python 3
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: install test dependencies
+        run: pip3 install \
+          molecule \
+          ansible \
+          ansible-core
+
+      - name: run molecule tests
+        run: molecule --debug test
+        env:
+          PY_COLORS: "1"
+          ANSIBLE_FORCE_COLOR: "1"
